@@ -2,6 +2,7 @@
 	<head>
 		<title>jQuery Example</title>
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="script/md5.js"></script>
 		<script lang="text/javascript">
 			var contacts = [
 				{
@@ -59,9 +60,16 @@
 				$('#contact').remove();
 
 				for (contact in contacts) {
+
+					//hacky
+					var gravatar = "<img src='http://www.gravatar.com/avatar/" + md5(contacts[contact].emails[0]) + "'/>";
+
+					console.log(gravatar);
+
 					var contact_filled = contact_template.clone();
-					replace_template(contact_filled, "#Picture#", "<img src='https://www.google.com/images/srpr/logo4w.png' />");
-					replace_template(contact_filled, "#Picture#", "https://www.google.com/images/srpr/logo4w.png");
+
+					replace_template(contact_filled, "#Picture#", gravatar);
+				
 					replace_template(contact_filled, "#Name#", contacts[contact].name);
 					replace_template(contact_filled, "#Title#", contacts[contact].title);
 					replace_template(contact_filled, "#Email#", contacts[contact].emails[0]);
@@ -85,7 +93,7 @@
 			</thead>
 			<tbody id="contacts">
 				<tr id="contact">
-					<td class="picture"><img src="#Picture#" /></td>
+					<td class="picture">#Picture#</td>
 					<td class="name">#Name#</td>
 					<td class="name">#Title#</td>
 					<td class="phone">#Phone#</td>
