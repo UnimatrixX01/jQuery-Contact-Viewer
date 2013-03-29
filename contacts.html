@@ -1,0 +1,97 @@
+<html>
+	<head>
+		<title>jQuery Example</title>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script lang="text/javascript">
+			var contacts = [
+				{
+					name: "Steve Atterbury",
+					title: "Lockheed",
+					emails: [
+						"Unimatrix01@gmail.com"
+					],
+					phones: [
+						"952-491-3716"
+					]
+				},
+				{
+					name: "Steve McAdams",
+					title: "Lockheed",
+					emails: [
+						"smcadams@gmail.com",
+					],
+					phones: [
+						"555-555-5555"
+					]
+				},
+				{
+					name: "Ray Tiley",
+					title: "Tightrope Media Systems",
+					emails: [
+						"raytiley@gmail.com"
+					],
+					phones: [
+						"555-555-5555"
+					]
+				},
+				{
+					name: "Tyler Smith",
+					title: "General Dynamics",
+					emails: [
+						"tylerhesthedude@gmail.com"
+					],
+					phones: [
+						"555-555-5555"
+					]
+				},
+			];
+
+			function replace_template(template, key, value) {
+				var content = template.find(":contains('"+key+"')");
+				if (content.length > 0) {
+					content.html(content.html().replace(key, value));
+				}
+			}
+
+			$().ready(function() {
+				var contact;
+				var contact_template = $('#contact').clone();
+				$('#contact').remove();
+
+				for (contact in contacts) {
+					var contact_filled = contact_template.clone();
+					replace_template(contact_filled, "#Picture#", "<img src='https://www.google.com/images/srpr/logo4w.png' />");
+					replace_template(contact_filled, "#Picture#", "https://www.google.com/images/srpr/logo4w.png");
+					replace_template(contact_filled, "#Name#", contacts[contact].name);
+					replace_template(contact_filled, "#Title#", contacts[contact].title);
+					replace_template(contact_filled, "#Email#", contacts[contact].emails[0]);
+					replace_template(contact_filled, "#Phone#", contacts[contact].phones[0]);
+
+					$('#contacts').append(contact_filled);
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<table>
+			<thead>
+				<tr>
+					<td></td>
+					<td>Name</td>
+					<td>Title<ltd>
+					<td>Phone Number</td>
+					<td>Email</td>
+				</tr>
+			</thead>
+			<tbody id="contacts">
+				<tr id="contact">
+					<td class="picture"><img src="#Picture#" /></td>
+					<td class="name">#Name#</td>
+					<td class="name">#Title#</td>
+					<td class="phone">#Phone#</td>
+					<td class="email">#Email#</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>
