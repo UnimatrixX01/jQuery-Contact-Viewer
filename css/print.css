@@ -1,0 +1,221 @@
+* {
+	margin:0px;
+	padding:0px;
+}
+
+html, body {
+	height:100%;
+	font-family:"Trebuchet MS";
+	font-size:12px;
+}
+
+a {
+	text-decoration:none;
+	color:#333333;
+}
+
+ul, ol {
+	margin-left:20px;
+}
+
+a:hover {
+	color:#016f8b;
+}
+
+img {
+	border:0px;
+}
+
+#container {
+	position:relative;
+	margin:0 auto;
+
+	height:auto !important;
+	height:100%;
+
+	min-height:100%;
+}
+
+#header {
+	display:none;
+}
+
+#content {
+	margin:5px 5px;
+}
+
+	#content .pageheader {
+		display:none;
+	}
+
+.datagrid {
+}
+	.datagrid .tableHeader {
+		padding:2px 5px;
+
+		font-size:16px;
+		font-weight:bold;
+	}
+
+	.datagrid table, .dataform table {
+		width:100%;
+	}
+		.datagrid table thead th, .dataform table thead th {
+			font-weight:bold;
+			text-align:left;
+		}
+
+		.datagrid table td, .datagrid table th, .dataform table td, .dataform table th {
+			padding:0px 5px;
+			height:25px;
+		}
+
+.dataform {
+	border:1px solid #c5c6c7;
+	background:#e4f5ff;
+}
+	.dataform .formHeader {
+		height:18px;
+		background:url(../images/grid_bg.gif) top left repeat-x;
+		border:1px solid #FFFFFF;
+		border-width:0px 1px;
+		padding:2px 5px;
+
+		font-size:12px;
+		font-weight:bold;
+	}
+
+	.dataform .formFooter {
+		background:url(../images/grid_footer_bg.gif) top left repeat-x;
+		height:6px;
+	}
+
+	.dataform .formButtons {
+		width:377px;
+	}
+
+	.dataform fieldset {
+		border:0px;
+		position:relative;
+
+		border:1px solid #FFFFFF;
+		border-width:0px 1px;
+	}
+
+		.dataform fieldset .legendPadding {
+			height:25px;
+		}
+
+		.dataform fieldset legend {
+			border:0px;
+			padding:0px;
+			margin:0px;
+		}
+
+		.dataform fieldset legend span.legend {
+			position:absolute;
+			top:0px; left:0px; right:0px;
+			padding:3px 10px;
+			background:url(../images/grid_tools_bg.gif) top left repeat-x;
+			border:0px;
+			height:17px;
+
+			font-size:12px;
+			text-align:left;
+		}
+
+	.dataform label {
+		clear:left;
+		float:left;
+		display:block;
+		height:17px;
+		width:200px;
+		padding:0px 24px 0px 5px;
+		margin:3px 4px 3px 0px;
+		text-align:right;
+	}
+
+	.dataform label.required {
+		background:url(../images/required.gif) top right no-repeat;
+	}
+
+	.dataform input, .dataform select {
+		height:18px;
+		margin:3px 6px 3px 0px;
+		float:left;
+		font-size:11px;
+	}
+
+	.dataform small {
+		clear:left;
+		float:left;
+		display:block;
+		margin:0px 0px 3px 234px;
+
+	}
+
+	.button, .dataform input.button, .button_over, .dataform input.button_over {
+		margin-left:10px;
+		height:22px;
+		background:url(../images/button_bg.gif) top left repeat-x;
+		border:1px solid #c5c6c7;
+	}
+
+	.button_over, .dataform input.button_over {
+		background:url(../images/button_over_bg.gif) top left repeat-x;
+		border:1px solid #c5c6c7;
+	}
+
+	.dataform .formButtons input.button, .dataform .formButtons input.button_over {
+		height:20px;
+		margin-top:15px;
+		float:right;
+	}
+
+#footer {
+	bottom:0pt;
+	position:absolute;
+	width:100%;
+}
+
+#footer div {
+	height:22px;
+	padding:6px 15px 0px 0px;
+}
+
+
+#message.success {
+	background:#b3f9bf url(../images/message_tl.gif) top left no-repeat;
+	margin-bottom:10px;
+}
+
+#message.error {
+	background:#feafa6 url(../images/message_tl.gif) top left no-repeat;
+	margin-bottom:10px;
+}
+
+	#message div {
+		background:url(../images/message_tr.gif) top right no-repeat;
+	}
+
+		#message div div {
+			background:url(../images/message_br.gif) bottom right no-repeat;
+		}
+
+			#message div div div {
+				background:url(../images/message_bl.gif) bottom left no-repeat;
+				padding:5px;
+			}
+
+				#message.success div div div div {
+					background:url(../images/message_success.gif) top left no-repeat;
+					padding:0px;
+					padding-left:20px;
+				}
+
+				#message.error div div div div {
+					background:url(../images/message_error.gif) top left no-repeat;
+					padding:0px;
+					padding-left:20px;
+				}
+
