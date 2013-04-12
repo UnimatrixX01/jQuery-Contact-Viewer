@@ -13,7 +13,7 @@
 	var _appendurl = '?key='+_apikey;
 
 	function getContacts(cb) {
-		$.get(
+		$.getJSON(
 			_baseurl + _appendurl,
 			function(data) {
 				_contacts = data.contacts;
@@ -22,7 +22,7 @@
 		);
 	}
 	function getContact(id, cb) {
-		$.get(
+		$.getJSON(
 			_baseurl + id + _appendurl,
 			function(data) {
 				cb(data.contact);
