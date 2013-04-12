@@ -11,6 +11,8 @@
   var _contactID = null;
         var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
   var _appendurl = '?key='+_apikey;
+  var _emailTemplate = null;
+  var _phoneTemplate = null;
 
   function getContacts(cb) {
     $.getJSON(
@@ -90,6 +92,27 @@
         contactEditContent.append('<p>' + contact.name + '</p>');
       });
     });
+
+    $(document).on("pagebeforeshow", "#contact-new-page", function() {
+      $('div[data-role="fieldcontain"] fieldset  div div label[for="default-txt"] span span').html('<img src="img/texting.png" width="32px" height="32px"></img>');
+      $('div[data-role="fieldcontain"] fieldset  div div label[for="default-call"] span span').html('<img src="img/phone.png" width="32px" height="32px"></img>');
+      $('div[data-role="fieldcontain"] fieldset  div div label[for="default-email"] span span').html('<img src="img/email.png" width="32px" height="32px"></img>');
+      _emailTemplate = $('#emailTemplate').clone();
+      _phoneTemplate = $('#phoneTemplate').clone();
+
+      $('#emailTemplate').remove();
+      $('#phoneTemplate').remove();
+
+    });
+
+    function addEmail() {
+      $('#emails').append(_emailTemplate.clone());
+    }
+
+    function addPhoneNum() {
+      $('#phones').append(_phoneTemplate.clone());
+    }
+
     </script>
 
   </head>
@@ -163,27 +186,71 @@
           </div>
 
           <div data-role="fieldcontain">
-            <label for="newphone">Phone Numbers:</label>
-            <input type="button" name="newphone" data-role="none" value="New Phone Number" />
+            <label>Phone Numbers:</label>
+          </div>
+
+          <div id="phones">
+          </div>
+
+          <div data-role="fieldcontain" class="ui-hide-label" id="phoneTemplate">
+            <fieldset data-role="controlgroup" data-type="horizontal">
+              <table width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <input type="radio" name="default-txt" id="default-txt" value="1" />
+                    <label for="default-txt">Default Text Number</label>
+                  </td>
+                  <td>
+                    <input type="radio" name="default-call" id="default-call" value="1" />
+                    <label for="default-call">Default Call Number</label>
+                  </td>
+                  <td width="100%">
+                    <input type="text" name="phone-1" id="phone-1" value="" placeholder="Phone Number" data-inline="true" />
+                    <label for="phone-1">Phone Number</label>
+                  </td>
+                  <td>
+                    <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick='$(event.target).parentsUntil("div[data-role=\"fieldcontain\"]").remove(); return false;'>Delete</a>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
           </div>
 
           <div data-role="fieldcontain">
-            <input type="radio" name="default-txt" value="1" />
-            <input type="radio" name="default-call" value="1" />
-            <input type="text" name="phone-1" value="" placeholder="Phone Number" />
-            <input type="button" data-role="none" value="Delete" />
+            <a href="" data-role="button" data-icon="plus" class="ui-btn-right" onclick="addPhoneNum(); return false;">New Phone Number</a>
           </div>
 
           <div data-role="fieldcontain">
             <label for="newemail">Emails</label>
-            <input type="button" name="newemail" data-role="none" value="New Email" />
+          </div>
+
+          <div data-role="fieldcontain" class="ui-hide-label" id="emailTemplate">
+            <fieldset data-role="controlgroup" data-type="horizontal">
+              <table width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <input type="radio" name="default-email" id="default-email" value="" />
+                    <label for="default-email">Default Email</label>
+                  </td>
+                  <td width="100%">
+                    <input type="text" name="email-1" id="email-1" value="" placeholder="Email" data-inline="true" />
+                    <label for="email-1">Email</label>
+                  </td>
+                  <td>
+                    <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick='$(event.target).parentsUntil("div[data-role=\"fieldcontain\"]").remove(); return false;'>Delete</a>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+          </div>
+
+          <div id="emails">
           </div>
 
           <div data-role="fieldcontain">
-            <input type="radio" name="default-email" value="1" />
-            <input type="text" name="email-1" value="" placeholder="Email" />
-            <input type="button" data-role="none" value="Delete" />
+            <a href="" data-role="button" data-icon="plus" class="ui-btn-right" onclick="addEmail(); return false;">New Email</a>
           </div>
+
         </form>
       </div>
     </div>
