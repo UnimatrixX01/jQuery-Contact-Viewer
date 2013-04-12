@@ -6,86 +6,86 @@
     <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script> 
     <script src="md5.js"></script> 
     <script>
-	var _apikey = 'demo';
-	var _contacts = null;
-	var _contactID = null;
+  var _apikey = 'demo';
+  var _contacts = null;
+  var _contactID = null;
         var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
-	var _appendurl = '?key='+_apikey;
+  var _appendurl = '?key='+_apikey;
 
-	function getContacts(cb) {
-		$.getJSON(
-			_baseurl + _appendurl,
-			function(data) {
-				_contacts = data.contacts;
-				cb();
-			}
-		);
-	}
-	function getContact(id, cb) {
-		$.getJSON(
-			_baseurl + id + _appendurl,
-			function(data) {
-				cb(data.contact);
-			}
-		);
-	}
+  function getContacts(cb) {
+    $.getJSON(
+      _baseurl + _appendurl,
+      function(data) {
+        _contacts = data.contacts;
+        cb();
+      }
+    );
+  }
+  function getContact(id, cb) {
+    $.getJSON(
+      _baseurl + id + _appendurl,
+      function(data) {
+        cb(data.contact);
+      }
+    );
+  }
 
-	$(document).on("click", "#contact-list a", function() {
-		_contactID = $(this).data('contact-id');
-		console.log("_contactID : " + _contactID);
-	});
+  $(document).on("click", "#contact-list a", function() {
+    _contactID = $(this).data('contact-id');
+    console.log("_contactID : " + _contactID);
+  });
 
-	$(document).on("pagebeforeshow", "#home-page", function() {
-		var contactList = $("#contact-list");
-		contactList.html('');
-		getContacts(function() {
-			//console.log("_contact : " + _contacts);
-			for (var i in _contacts ) { 
-				var contact = _contacts[i];
-				//console.log("contact : " + contact.name);
-				contactList.append(
-				'<li>'+
-				'<a href="#contact-details-page" data-contact-id="'+contact._id+'">'+
-				'<img src=http://www.gravatar.com/avatar/'+ md5(contact.email) +'?d=monsterid />'+
-				'<h2>'+contact.name+'</h2>'+
-				'<p>'+contact.title+'</p>'+
-				'</a>'+
-				'</li>');
-			}
-			contactList.listview('refresh');
-		});
-	});
-	
-	// Bind to the navigate event
-	$( window ).on( "navigate", function( event, data ) {
-	  console.log( data.state.info );
-	  console.log( data.state.direction )
-	  console.log( data.state.url )
-	  console.log( data.state.hash )
-	});
+  $(document).on("pagebeforeshow", "#home-page", function() {
+    var contactList = $("#contact-list");
+    contactList.html('');
+    getContacts(function() {
+      //console.log("_contact : " + _contacts);
+      for (var i in _contacts ) { 
+        var contact = _contacts[i];
+        //console.log("contact : " + contact.name);
+        contactList.append(
+        '<li>'+
+        '<a href="#contact-details-page" data-contact-id="'+contact._id+'">'+
+        '<img src=http://www.gravatar.com/avatar/'+ md5(contact.email) +'?d=monsterid />'+
+        '<h2>'+contact.name+'</h2>'+
+        '<p>'+contact.title+'</p>'+
+        '</a>'+
+        '</li>');
+      }
+      contactList.listview('refresh');
+    });
+  });
+  
+  // Bind to the navigate event
+  $( window ).on( "navigate", function( event, data ) {
+    console.log( data.state.info );
+    console.log( data.state.direction )
+    console.log( data.state.url )
+    console.log( data.state.hash )
+  });
 
     $(document).on("pagebeforeshow", "#contact-details-page", function() {
-    	// Put a # in front of the name to say "get it by id"
-		var contactContent = $("#contact-details-content");
-		contactContent.html('');
-		getContact(_contactID, function(contact) {
-			var detailsPage = $("#contact-details-page");
-			detailsPage.find("#detail_name").text(contact.name);
-			detailsPage.find("#detail_title").text(contact.title);
-			detailsPage.find("#detail_emails").text(contact.email);
-			detailsPage.find("#detail_phones").text(contact.phone);
-			detailsPage.find("#detail_twitter").text(contact.twitterId);
-		});
+      // Put a # in front of the name to say "get it by id"
+    var contactContent = $("#contact-details-content");
+    contactContent.html('');
+    getContact(_contactID, function(contact) {
+      var detailsPage = $("#contact-details-page");
+      detailsPage.find("#detail_name").text(contact.name);
+      detailsPage.find("#detail_title").text(contact.title);
+      detailsPage.find("#detail_emails").text(contact.email);
+      detailsPage.find("#detail_phones").text(contact.phone);
+      detailsPage.find("#detail_twitter").text(contact.twitterId);
+    });
     });
 
     $(document).on("pagebeforeshow", "#contact-edit-page", function() {
-    	// Put a # in front of the name to say "get it by id"
-		var contactEditContent = $("#contact-edit-content");
-		contactEditContent.html('');
-		getContact(_contactID, function(contact) {
-			console.log("contact : " + contact);
-			contactEditContent.append('<p>' + contact.name + '</p>');
-		});
+      // Put a # in front of the name to say "get it by id"
+    var contactEditContent = $("#contact-edit-content");
+    contactEditContent.html('');
+    getContact(_contactID, function(contact) {
+      console.log("contact : " + contact);
+      contactEditContent.append('<p>' + contact.name + '</p>');
+    });
     });
 
     </script>
@@ -95,52 +95,95 @@
     <div data-role="page" id="home-page">
       <div data-role="header">
         <h1>MSSE jQuery Mobile Contact Viewer</h1>
+    <a href="#contact-new-page" class="ui-btn-right" data-icon="check">New Contact</a>
       </div>
       <div data-role="content">
-		<ul data-role="listview" id="contact-list" data-filter="true">
-			<li>
-				<a href="#contact-details-page">List item 1</a>
-			</li>
-		</ul>
+    <ul data-role="listview" id="contact-list" data-filter="true">
+      <li>
+        <a href="#contact-details-page">List item 1</a>
+      </li>
+    </ul>
       </div>
     </div>
     <div data-role="page" id="contact-details-page">
       <div data-role="header" id="contact-details-header">
-			<a href="index.html" data-icon="back">Back</a>
-			<h1>Details</h1>
-			<a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
-		</div>
+      <a href="index.html" data-icon="back">Back</a>
+      <h1>Details</h1>
+      <a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
+    </div>
       <div data-role="content">
-		<div role="fieldcontain">
-			<h3>Name:</h3>
-			<p id="detail_name" />
-		</div>
-		<div role="fieldcontain">
-			<h3>Title:</h3>
-			<p id="detail_title" />
-		</div>
-		<div role="fieldcontain">
-			<h3>Phones:</h3>
-			<p id="detail_phones" />
-		</div>
-		<div role="fieldcontain">
-			<h3>Emails:</h3>
-			<p id="detail_emails" />
-		</div>
-		<div role="fieldcontain">
-			<h3>Twitter:</h3>
-			<p id="detail_twitter" />
-		</div>
+    <div role="fieldcontain">
+      <h3>Name:</h3>
+      <p id="detail_name" />
+    </div>
+    <div role="fieldcontain">
+      <h3>Title:</h3>
+      <p id="detail_title" />
+    </div>
+    <div role="fieldcontain">
+      <h3>Phones:</h3>
+      <p id="detail_phones" />
+    </div>
+    <div role="fieldcontain">
+      <h3>Emails:</h3>
+      <p id="detail_emails" />
+    </div>
+    <div role="fieldcontain">
+      <h3>Twitter:</h3>
+      <p id="detail_twitter" />
+    </div>
 
       </div>
   </div>
     <!--http://jquerymobile.com/demos/1.2.1/docs/toolbars/docs-headers.html-->
     <div data-role="page" id="contact-edit-page" data-add-back-btn="true" data-back-btn-text="Back">
-    	<div data-role="header">
-    		<h1>Edit</h1>
-    	</div>
-    	<div data-role="content" id="contact-edit-content">
-    	</div>
+      <div data-role="header">
+        <h1>Edit</h1>
+      </div>
+      <div data-role="content" id="contact-edit-content">
+      </div>
+    </div>
+    <div data-role="page" id="contact-new-page">
+      <div data-role="header">
+        <a href="index.html" data-icon="delete">Cancel</a>
+        <h1>New Contact</h1>
+        <a href="index.html" data-icon="check" data-theme="b">Save</a>
+      </div>
+      <div data-role="content">
+        <form action="#" method="post">
+          <div data-role="fieldcontain">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" value="" placeholder="Name"/>
+          </div>
+          <div data-role="fieldcontain">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" value="" placeholder="Title"/>
+          </div>
+
+          <div data-role="fieldcontain">
+            <label for="newphone">Phone Numbers:</label>
+            <input type="button" name="newphone" data-role="none" value="New Phone Number" />
+          </div>
+
+          <div data-role="fieldcontain">
+            <input type="radio" name="default-txt" value="1" />
+            <input type="radio" name="default-call" value="1" />
+            <input type="text" name="phone-1" value="" placeholder="Phone Number" />
+            <input type="button" data-role="none" value="Delete" />
+          </div>
+
+          <div data-role="fieldcontain">
+            <label for="newemail">Emails</label>
+            <input type="button" name="newemail" data-role="none" value="New Email" />
+          </div>
+
+          <div data-role="fieldcontain">
+            <input type="radio" name="default-email" value="1" />
+            <input type="text" name="email-1" value="" placeholder="Email" />
+            <input type="button" data-role="none" value="Delete" />
+          </div>
+        </form>
+      </div>
     </div>
   </body>
 </html>
