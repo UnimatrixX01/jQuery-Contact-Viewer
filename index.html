@@ -93,7 +93,8 @@
         detailsPage.find("#detail_emails").text(contact.email);
         detailsPage.find("#detail_phones").text(contact.phone);
         detailsPage.find("#detail_twitter").text(contact.twitterId);
-      });
+        detailsPage.find("#detail_image").html("<img src=http://www.gravatar.com/avatar/"+ md5(contact.email) +"?d=monsterid />");
+              });
     });
 
     $(document).on("pagebeforeshow", "#contact-edit-page", function() {
@@ -129,6 +130,10 @@
         <a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
       </div>
       <div data-role="content">
+
+        <div id="detail_image">
+        </div>
+
         <div role="fieldcontain">
           <h3>Name:</h3>
           <p id="detail_name" />
