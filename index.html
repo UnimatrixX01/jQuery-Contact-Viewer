@@ -55,39 +55,41 @@
       contactList.listview('refresh');
     });
   });
-  
-  // Bind to the navigate event
-  $( window ).on( "navigate", function( event, data ) {
-    console.log( data.state.info );
-    console.log( data.state.direction )
-    console.log( data.state.url )
-    console.log( data.state.hash )
-  });
 
+  $(function() {
+    $( "#contact-details-page" ).on( 'swiperight', swiperightHandler );
+      function swiperightHandler( event ) {
+         $(event.target).addClass( "swiperight" );
+         $.mobile.changePage( "index.html", {
+             transition: "slide",
+             reverse: false,
+             changeHash: true
+         });
+
+      }
+ });
+ 
     $(document).on("pagebeforeshow", "#contact-details-page", function() {
-      // Put a # in front of the name to say "get it by id"
-    var contactContent = $("#contact-details-content");
-    contactContent.html('');
-    getContact(_contactID, function(contact) {
-      var detailsPage = $("#contact-details-page");
-      detailsPage.find("#detail_name").text(contact.name);
-      detailsPage.find("#detail_title").text(contact.title);
-      detailsPage.find("#detail_emails").text(contact.email);
-      detailsPage.find("#detail_phones").text(contact.phone);
-      detailsPage.find("#detail_twitter").text(contact.twitterId);
-    });
+      var contactContent = $("#contact-details-content");
+      contactContent.html('');
+      getContact(_contactID, function(contact) {
+        var detailsPage = $("#contact-details-page");
+        detailsPage.find("#detail_name").text(contact.name);
+        detailsPage.find("#detail_title").text(contact.title);
+        detailsPage.find("#detail_emails").text(contact.email);
+        detailsPage.find("#detail_phones").text(contact.phone);
+        detailsPage.find("#detail_twitter").text(contact.twitterId);
+      });
     });
 
     $(document).on("pagebeforeshow", "#contact-edit-page", function() {
-      // Put a # in front of the name to say "get it by id"
-    var contactEditContent = $("#contact-edit-content");
-    contactEditContent.html('');
-    getContact(_contactID, function(contact) {
-      console.log("contact : " + contact);
-      contactEditContent.append('<p>' + contact.name + '</p>');
+      var contactEditContent = $("#contact-edit-content");
+      contactEditContent.html('');
+      getContact(_contactID, function(contact) {
+        console.log("contact : " + contact);
+        contactEditContent.append('<p>' + contact.name + '</p>');
+      });
     });
-    });
-
     </script>
 
   </head>
@@ -107,32 +109,32 @@
     </div>
     <div data-role="page" id="contact-details-page">
       <div data-role="header" id="contact-details-header">
-      <a href="index.html" data-icon="back">Back</a>
-      <h1>Details</h1>
-      <a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
-    </div>
+        <a href="index.html" data-icon="back">Back</a>
+        <h1>Details</h1>
+        <a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
+      </div>
       <div data-role="content">
-    <div role="fieldcontain">
-      <h3>Name:</h3>
-      <p id="detail_name" />
-    </div>
-    <div role="fieldcontain">
-      <h3>Title:</h3>
-      <p id="detail_title" />
-    </div>
-    <div role="fieldcontain">
-      <h3>Phones:</h3>
-      <p id="detail_phones" />
-    </div>
-    <div role="fieldcontain">
-      <h3>Emails:</h3>
-      <p id="detail_emails" />
-    </div>
-    <div role="fieldcontain">
-      <h3>Twitter:</h3>
-      <p id="detail_twitter" />
-    </div>
-
+        <div role="fieldcontain">
+          <h3>Name:</h3>
+          <p id="detail_name" />
+        </div>
+        <div role="fieldcontain">
+          <h3>Title:</h3>
+          <p id="detail_title" />
+        </div>
+        <div role="fieldcontain">
+          <h3>Phones:</h3>
+          <p id="detail_phones" />
+        </div>
+        <div role="fieldcontain">
+          <h3>Emails:</h3>
+          <p id="detail_emails" />
+        </div>
+        <div role="fieldcontain">
+          <h3>Twitter:</h3>
+          <p id="detail_twitter" />
+        </div>
+        <button id="contact_delete_btn" value="Delete"></button>
       </div>
   </div>
     <!--http://jquerymobile.com/demos/1.2.1/docs/toolbars/docs-headers.html-->
