@@ -30,6 +30,11 @@
 		);
 	}
 
+	$(document).on("click", "#contact-list a", function() {
+		_contactID = $(this).data('contact-id');
+		console.log("_contactID : " + _contactID);
+	});
+
 	$(document).on("pagebeforeshow", "#home-page", function() {
 		var contactList = $("#contact-list");
 		contactList.html('');
@@ -40,7 +45,7 @@
 				//console.log("contact : " + contact.name);
 				contactList.append(
 				'<li>'+
-				'<a href="#contact-details-page">'+
+				'<a href="#contact-details-page" data-contact-id="'+contact._id+'">'+
 				'<img src=http://www.gravatar.com/avatar/'+ md5(contact.email) +'?d=monsterid />'+
 				'<h2>'+contact.name+'</h2>'+
 				'<p>'+contact.title+'</p>'+
@@ -60,8 +65,9 @@
 	});
 
         $(document).on("pagebeforeshow", "#contact-details-page", function() {
-	    getContact(_contactID, function(contact) {
-				console.log("contact : " + contact);
+		getContact(_contactID, function(contact) {
+			console.log("contact : " + contact);
+		
 		});
         });
 
@@ -87,6 +93,7 @@
         <h1>Details</h1>
       </div>
       <div data-role="content">
+	
       </div>
     </div>
   </body>
