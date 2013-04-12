@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script> 
+    <script src="md5.js"></script> 
+    <script>
+	var _apikey = 'demo';
+	var _contacts = null;
+	var _contactID = null;
+        var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
+	var _appendurl = '?key='+_apikey;
+
+	function getContacts(cb) {
+		$.get(
+			_baseurl + _appendurl,
+			function(data) {
+				_contacts = data.contacts;
+				cb();
+			}
+		);
+	}
+	function getContact(id, cb) {
+		$.get(
+			_baseurl + id + _appendurl,
+			function(data) {
+				cb(data.contact);
+			}
+		);
+	}
+
+	$(document).on("pagebeforeshow", "#home-page", function() {
+		var contactList = $("#contact-list");
+		contactList.html('');
+		getContacts(function() {
+			//console.log("_contact : " + _contacts);
+			for (var i in _contacts ) { 
+				var contact = _contacts[i];
+				//console.log("contact : " + contact.name);
+				contactList.append(
+				'<li>'+
+				'<a href="#contact-details-page">'+
+				'<img src=http://www.gravatar.com/avatar/'+ md5(contact.email) +'?d=monsterid />'+
+				'<h2>'+contact.name+'</h2>'+
+				'<p>'+contact.title+'</p>'+
+				'</a>'+
+				'</li>');
+			}
+			contactList.listview('refresh');
+		});
+	});
+	
+	// Bind to the navigate event
+	$( window ).on( "navigate", function( event, data ) {
+	  console.log( data.state.info );
+	  console.log( data.state.direction )
+	  console.log( data.state.url )
+	  console.log( data.state.hash )
+	});
+
+        $(document).on("pagebeforeshow", "#contact-details-page", function() {
+	    getContact(_contactID, function(contact) {
+				console.log("contact : " + contact);
+		});
+        });
+
+
+    </script>
+
+  </head>
+  <body>
+    <div data-role="page" id="home-page">
+      <div data-role="header">
+        <h1>MSSE jQuery Mobile Contact Viewer</h1>
+      </div>
+      <div data-role="content">
+		<ul data-role="listview" id="contact-list" data-filter="true">
+			<li>
+				<a href="#contact-details-page">List item 1</a>
+			</li>
+		</ul>
+      </div>
+    </div>
+    <div data-role="page" id="contact-details-page" data-add-back-btn="true" data-back-btn-text="Back">
+      <div data-role="header">
+        <h1>Details</h1>
+      </div>
+      <div data-role="content">
+      </div>
+    </div>
+  </body>
+</html>
