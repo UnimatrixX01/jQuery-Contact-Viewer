@@ -64,7 +64,10 @@
 	  console.log( data.state.hash )
 	});
 
-        $(document).on("pagebeforeshow", "#contact-details-page", function() {
+    $(document).on("pagebeforeshow", "#contact-details-page", function() {
+    	// Put a # in front of the name to say "get it by id"
+		var contactContent = $("#contact-details-content");
+		contactContent.html('');
 		getContact(_contactID, function(contact) {
 			var detailsPage = $("#contact-details-page");
 			detailsPage.find("#detail_name").text(contact.name);
@@ -73,8 +76,17 @@
 			detailsPage.find("#detail_phones").text(contact.phone);
 			detailsPage.find("#detail_twitter").text(contact.twitterId);
 		});
-        });
+    });
 
+    $(document).on("pagebeforeshow", "#contact-edit-page", function() {
+    	// Put a # in front of the name to say "get it by id"
+		var contactEditContent = $("#contact-edit-content");
+		contactEditContent.html('');
+		getContact(_contactID, function(contact) {
+			console.log("contact : " + contact);
+			contactEditContent.append('<p>' + contact.name + '</p>');
+		});
+    });
 
     </script>
 
@@ -92,33 +104,43 @@
 		</ul>
       </div>
     </div>
-    <div data-role="page" id="contact-details-page" data-add-back-btn="true" data-back-btn-text="Back">
-      <div data-role="header">
-        <h1>Details</h1>
-      </div>
+    <div data-role="page" id="contact-details-page">
+      <div data-role="header" id="contact-details-header">
+			<a href="index.html" data-icon="back">Back</a>
+			<h1>Details</h1>
+			<a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
+		</div>
       <div data-role="content">
-	<div role="fieldcontain">
-		<h3>Name:</h3>
-		<p id="detail_name" />
-	</div>
-	<div role="fieldcontain">
-		<h3>Title:</h3>
-		<p id="detail_title" />
-	</div>
-	<div role="fieldcontain">
-		<h3>Phones:</h3>
-		<p id="detail_phones" />
-	</div>
-	<div role="fieldcontain">
-		<h3>Emails:</h3>
-		<p id="detail_emails" />
-	</div>
-	<div role="fieldcontain">
-		<h3>Twitter:</h3>
-		<p id="detail_twitter" />
-	</div>
+		<div role="fieldcontain">
+			<h3>Name:</h3>
+			<p id="detail_name" />
+		</div>
+		<div role="fieldcontain">
+			<h3>Title:</h3>
+			<p id="detail_title" />
+		</div>
+		<div role="fieldcontain">
+			<h3>Phones:</h3>
+			<p id="detail_phones" />
+		</div>
+		<div role="fieldcontain">
+			<h3>Emails:</h3>
+			<p id="detail_emails" />
+		</div>
+		<div role="fieldcontain">
+			<h3>Twitter:</h3>
+			<p id="detail_twitter" />
+		</div>
 
       </div>
+  </div>
+    <!--http://jquerymobile.com/demos/1.2.1/docs/toolbars/docs-headers.html-->
+    <div data-role="page" id="contact-edit-page" data-add-back-btn="true" data-back-btn-text="Back">
+    	<div data-role="header">
+    		<h1>Edit</h1>
+    	</div>
+    	<div data-role="content" id="contact-edit-content">
+    	</div>
     </div>
   </body>
 </html>
