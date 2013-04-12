@@ -9,7 +9,7 @@
   var _apikey = 'demo';
   var _contacts = null;
   var _contactID = null;
-        var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
+  var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
   var _appendurl = '?key='+_apikey;
 
   function getContacts(cb) {
@@ -29,6 +29,17 @@
       }
     );
   }
+
+  $(document).on("click", "#contact_delete_btn", function() {
+      $.ajax({
+            url: _baseurl + _contactID + _appendurl,
+            type: 'DELETE',
+            success: function(result) {
+              console.log("contact deleted..");
+              goHome();
+            }
+      });
+  });
 
   $(document).on("click", "#contact-list a", function() {
     _contactID = $(this).data('contact-id');
@@ -56,18 +67,21 @@
     });
   });
 
+  function goHome() {
+    $.mobile.changePage( "index.html", {
+        transition: "slide",
+        reverse: false,
+        changeHash: true
+    });
+
+  }
+
   $(function() {
     $( "#contact-details-page" ).on( 'swiperight', swiperightHandler );
       function swiperightHandler( event ) {
-         $(event.target).addClass( "swiperight" );
-         $.mobile.changePage( "index.html", {
-             transition: "slide",
-             reverse: false,
-             changeHash: true
-         });
-
+        goHome();
       }
- });
+  });
  
     $(document).on("pagebeforeshow", "#contact-details-page", function() {
       var contactContent = $("#contact-details-content");
@@ -90,7 +104,8 @@
         contactEditContent.append('<p>' + contact.name + '</p>');
       });
     });
-    </script>
+    
+  </script>
 
   </head>
   <body>
