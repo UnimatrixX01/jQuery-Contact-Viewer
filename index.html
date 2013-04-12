@@ -66,8 +66,12 @@
 
         $(document).on("pagebeforeshow", "#contact-details-page", function() {
 		getContact(_contactID, function(contact) {
-			console.log("contact : " + contact);
-		
+			var detailsPage = $("#contact-details-page");
+			detailsPage.find("#detail_name").text(contact.name);
+			detailsPage.find("#detail_title").text(contact.title);
+			detailsPage.find("#detail_emails").text(contact.email);
+			detailsPage.find("#detail_phones").text(contact.phone);
+			detailsPage.find("#detail_twitter").text(contact.twitterId);
 		});
         });
 
@@ -93,7 +97,27 @@
         <h1>Details</h1>
       </div>
       <div data-role="content">
-	
+	<div role="fieldcontain">
+		<h3>Name:</h3>
+		<p id="detail_name" />
+	</div>
+	<div role="fieldcontain">
+		<h3>Title:</h3>
+		<p id="detail_title" />
+	</div>
+	<div role="fieldcontain">
+		<h3>Phones:</h3>
+		<p id="detail_phones" />
+	</div>
+	<div role="fieldcontain">
+		<h3>Emails:</h3>
+		<p id="detail_emails" />
+	</div>
+	<div role="fieldcontain">
+		<h3>Twitter:</h3>
+		<p id="detail_twitter" />
+	</div>
+
       </div>
     </div>
   </body>
