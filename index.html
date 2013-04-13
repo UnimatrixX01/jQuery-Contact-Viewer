@@ -6,141 +6,186 @@
     <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script> 
     <script src="md5.js"></script> 
     <script>
-  var _apikey = 'demo';
-  var _contacts = null;
-  var _contactID = null;
-  var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
-  var _appendurl = '?key='+_apikey;
-  var _emailTemplate = null;
-  var _phoneTemplate = null;
+      var _apikey = 'somethingwitty';
+      var _contacts = null;
+      var _contactID = null;
+      var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
+      var _appendurl = '?key='+_apikey;
 
-  function getContacts(cb) {
-    $.getJSON(
-      _baseurl + _appendurl,
-      function(data) {
-        _contacts = data.contacts;
-        cb();
+      function getContacts(cb) {
+        $.getJSON(
+          _baseurl + _appendurl,
+          function(data) {
+            _contacts = data.contacts;
+            cb();
+          }
+        );
       }
-    );
-  }
-  function getContact(id, cb) {
-    $.getJSON(
-      _baseurl + id + _appendurl,
-      function(data) {
-        cb(data.contact);
+      function getContact(id, cb) {
+        $.getJSON(
+          _baseurl + id + _appendurl,
+          function(data) {
+            cb(data.contact);
+          }
+        );
       }
-    );
-  }
 
-  $(document).on("click", "#contact_delete_btn", function() {
-      $.ajax({
-            url: _baseurl + _contactID + _appendurl,
-            type: 'DELETE',
-            success: function(result) {
-              console.log("contact deleted..");
-              goHome();
-            }
+      $(document).on("click", "#contact_delete_btn", function() {
+        $.ajax({
+          url: _baseurl + _contactID + _appendurl,
+          type: 'DELETE',
+          success: function(result) {
+            console.log("contact deleted..");
+            goHome();
+          }
+        });
       });
-  });
 
-  $(document).on("click", "#contact-list a", function() {
-    _contactID = $(this).data('contact-id');
-    console.log("_contactID : " + _contactID);
-  });
+      $(document).on("click", "#contact-list a", function() {
+        _contactID = $(this).data('contact-id');
+        console.log("_contactID : " + _contactID);
+      });
 
-  $(document).on("pagebeforeshow", "#home-page", function() {
-    var contactList = $("#contact-list");
-    contactList.html('');
-    getContacts(function() {
-      //console.log("_contact : " + _contacts);
-      for (var i in _contacts ) { 
-        var contact = _contacts[i];
-        //console.log("contact : " + contact.name);
-        contactList.append(
-        '<li>'+
-        '<a href="#contact-details-page" data-contact-id="'+contact._id+'">'+
-        '<img src=http://www.gravatar.com/avatar/'+ md5(contact.email) +'?d=monsterid />'+
-        '<h2>'+contact.name+'</h2>'+
-        '<p>'+contact.title+'</p>'+
-        '</a>'+
-        '</li>');
+      $(document).on("pagebeforeshow", "#home-page", function() {
+        var contactList = $("#contact-list");
+        contactList.html('');
+        getContacts(function() {
+          //console.log("_contact : " + _contacts);
+          for (var i in _contacts ) { 
+            var contact = _contacts[i];
+            //console.log("contact : " + contact.name);
+            contactList.append(
+            '<li>'+
+            '<a href="#contact-details-page" data-contact-id="'+contact._id+'">'+
+            '<img src=http://www.gravatar.com/avatar/'+ md5(contact.email) +'?d=monsterid />'+
+            '<h2>'+contact.name+'</h2>'+
+            '<p>'+contact.title+'</p>'+
+            '</a>'+
+            '</li>');
+          }
+          contactList.listview('refresh');
+        });
+      });
+
+      function goHome() {
+        $.mobile.changePage( "index.html", {
+          transition: "slide",
+          reverse: false,
+          changeHash: true
+        });
       }
-      contactList.listview('refresh');
-    });
-  });
 
-  function goHome() {
-    $.mobile.changePage( "index.html", {
-        transition: "slide",
-        reverse: false,
-        changeHash: true
-    });
+      $(function() {
+        $( "#contact-details-page" ).on( 'swiperight', swiperightHandler );
+      });
 
-  }
-
-  $(function() {
-    $( "#contact-details-page" ).on( 'swiperight', swiperightHandler );
       function swiperightHandler( event ) {
         goHome();
       }
-  });
  
-    $(document).on("pagebeforeshow", "#contact-details-page", function() {
-      var contactContent = $("#contact-details-content");
-      contactContent.html('');
-      getContact(_contactID, function(contact) {
-        var detailsPage = $("#contact-details-page");
-        detailsPage.find("#detail_name").text(contact.name);
-        detailsPage.find("#detail_title").text(contact.title);
-        detailsPage.find("#detail_emails").text(contact.email);
-        detailsPage.find("#detail_phones").text(contact.phone);
-        detailsPage.find("#detail_twitter").text(contact.twitterId);
-        detailsPage.find("#detail_image").html("<img src=http://www.gravatar.com/avatar/"+ md5(contact.email) +"?d=monsterid />");
-              });
-    });
-
-    $(document).on("pagebeforeshow", "#contact-edit-page", function() {
-      var contactEditContent = $("#contact-edit-content");
-      contactEditContent.html('');
-      getContact(_contactID, function(contact) {
-        console.log("contact : " + contact);
-        contactEditContent.append('<p>' + contact.name + '</p>');
+      $(document).on("pagebeforeshow", "#contact-details-page", function() {
+        var contactContent = $("#contact-details-content");
+        contactContent.html('');
+        getContact(_contactID, function(contact) {
+          var detailsPage = $("#contact-details-page");
+          detailsPage.find("#detail_name").text(contact.name);
+          detailsPage.find("#detail_title").text(contact.title);
+          detailsPage.find("#detail_emails").text(contact.email);
+          detailsPage.find("#detail_phones").text(contact.phone);
+          detailsPage.find("#detail_twitter").text(contact.twitterId);
+          detailsPage.find("#detail_image").html("<img src=http://www.gravatar.com/avatar/"+ md5(contact.email) +"?d=monsterid />");
+        });
       });
-    });
 
-    $(document).on("pagebeforeshow", "#contact-new-page", function() {
-      $('div[data-role="fieldcontain"] fieldset  div div label[for="default-txt"] span span').html('<img src="img/texting.png" width="32px" height="32px"></img>');
-      $('div[data-role="fieldcontain"] fieldset  div div label[for="default-call"] span span').html('<img src="img/phone.png" width="32px" height="32px"></img>');
-      $('div[data-role="fieldcontain"] fieldset  div div label[for="default-email"] span span').html('<img src="img/email.png" width="32px" height="32px"></img>');
-      _emailTemplate = $('#emailTemplate').clone();
-      _phoneTemplate = $('#phoneTemplate').clone();
+      $(document).on("pagebeforeshow", "#contact-edit-page", function() {
+        var contactEditContent = $("#contact-edit-content");
+        contactEditContent.html('');
+        getContact(_contactID, function(contact) {
+          console.log("contact : " + contact);
+          contactEditContent.append('<p>' + contact.name + '</p>');
+        });
+      });
 
-      $('#emailTemplate').remove();
-      $('#phoneTemplate').remove();
+      $(document).on("pagebeforeshow", "#contact-new-page", function() {
+      });
 
-    });
+      function onDeleteList(event) {
+        $(event.target).parentsUntil("div[data-role='fieldcontain']").remove();
+        return false;
+      }
 
-    function addEmail() {
-      $('#emails').append(_emailTemplate.clone());
-    }
+      function addEmail() {
+        var newElement = $(
+          '<div data-role="fieldcontain" class="ui-hide-label" id="emailTemplate">' +
+          '  <fieldset data-role="controlgroup" data-type="horizontal">' +
+          '    <table width="100%" cellspacing="0" cellpadding="0">' +
+          '      <tr>' +
+          '        <td>' +
+          '          <input type="radio" name="default-email" id="default-email" value="" />' +
+          '          <label for="default-email">Default Email</label>' +
+          '        </td>' +
+          '        <td width="100%">' +
+          '          <input type="text" name="email-1" id="email-1" value="" placeholder="Email" data-inline="true" />' +
+          '          <label for="email-1">Email</label>' +
+          '        </td>' +
+          '        <td>' +
+          '          <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick="return onDeleteList(event);">Delete</a>' +
+          '        </td>' +
+          '      </tr>' +
+          '    </table>' +
+          '  </fieldset>' +
+          '</div>'
+        );
+        $('#emails').append(newElement);
+        newElement.trigger('create');
 
-    function addPhoneNum() {
-      $('#phones').append(_phoneTemplate.clone());
-    }
-  </script>
+        $('div[data-role="fieldcontain"] fieldset  div div label[for="default-email"] span span').html('<img src="img/email.png" width="32px" height="32px"></img>');
+      }
+
+      function addPhoneNum() {
+        $('#phones').append(
+          '<div data-role="fieldcontain" class="ui-hide-label" id="phoneTemplate">' +
+          '  <fieldset data-role="controlgroup" data-type="horizontal">' +
+          '    <table width="100%" cellspacing="0" cellpadding="0">' +
+          '      <tr>' +
+          '        <td>' +
+          '          <input type="radio" name="default-txt" id="default-txt" value="1" />' +
+          '          <label for="default-txt">Default Text Number</label>' +
+          '        </td>' +
+          '        <td>' +
+          '          <input type="radio" name="default-call" id="default-call" value="1" />' +
+          '          <label for="default-call">Default Call Number</label>' +
+          '        </td>' +
+          '        <td width="100%">' +
+          '          <input type="text" name="phone-1" id="phone-1" value="" placeholder="Phone Number" data-inline="true" />' +
+          '          <label for="phone-1">Phone Number</label>' +
+          '        </td>' +
+          '        <td>' +
+          '          <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick="return onDeleteList(event);">Delete</a>' +
+          '        </td>' +
+          '      </tr>' +
+          '    </table>' +
+          '  </fieldset>' +
+          '</div>'
+        );
+        $('#phones').trigger('create');
+        $('div[data-role="fieldcontain"] fieldset  div div label[for="default-txt"] span span').html('<img src="img/texting.png" width="32px" height="32px"></img>');
+        $('div[data-role="fieldcontain"] fieldset  div div label[for="default-call"] span span').html('<img src="img/phone.png" width="32px" height="32px"></img>');
+      }
+    </script>
   </head>
   <body>
     <div data-role="page" id="home-page">
       <div data-role="header">
         <h1>MSSE jQuery Mobile Contact Viewer</h1>
-    <a href="#contact-new-page" class="ui-btn-right" data-icon="check">New Contact</a>
+        <a href="#contact-new-page" class="ui-btn-right" data-icon="check">New Contact</a>
       </div>
       <div data-role="content">
-    <ul data-role="listview" id="contact-list" data-filter="true">
-      <li>
-        <a href="#contact-details-page">List item 1</a>
-      </li>
-    </ul>
+        <ul data-role="listview" id="contact-list" data-filter="true">
+          <li>
+            <a href="#contact-details-page">List item 1</a>
+          </li>
+        </ul>
       </div>
     </div>
     <div data-role="page" id="contact-details-page">
@@ -150,10 +195,8 @@
         <a href="#contact-edit-page" data-icon="edit" data-theme="b">Edit</a>
       </div>
       <div data-role="content">
-
         <div id="detail_image">
         </div>
-
         <div role="fieldcontain">
           <h3>Name:</h3>
           <p id="detail_name" />
@@ -176,14 +219,13 @@
         </div>
         <button id="contact_delete_btn" value="Delete"></button>
       </div>
-  </div>
+    </div>
     <!--http://jquerymobile.com/demos/1.2.1/docs/toolbars/docs-headers.html-->
     <div data-role="page" id="contact-edit-page" data-add-back-btn="true" data-back-btn-text="Back">
       <div data-role="header">
         <h1>Edit</h1>
       </div>
-      <div data-role="content" id="contact-edit-content">
-      </div>
+      <div data-role="content" id="contact-edit-content"></div>
     </div>
     <div data-role="page" id="contact-new-page">
       <div data-role="header">
@@ -201,73 +243,22 @@
             <label for="title">Title:</label>
             <input type="text" name="title" id="title" value="" placeholder="Title"/>
           </div>
-
           <div data-role="fieldcontain">
             <label>Phone Numbers:</label>
           </div>
-
           <div id="phones">
           </div>
-
-          <div data-role="fieldcontain" class="ui-hide-label" id="phoneTemplate">
-            <fieldset data-role="controlgroup" data-type="horizontal">
-              <table width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td>
-                    <input type="radio" name="default-txt" id="default-txt" value="1" />
-                    <label for="default-txt">Default Text Number</label>
-                  </td>
-                  <td>
-                    <input type="radio" name="default-call" id="default-call" value="1" />
-                    <label for="default-call">Default Call Number</label>
-                  </td>
-                  <td width="100%">
-                    <input type="text" name="phone-1" id="phone-1" value="" placeholder="Phone Number" data-inline="true" />
-                    <label for="phone-1">Phone Number</label>
-                  </td>
-                  <td>
-                    <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick='$(event.target).parentsUntil("div[data-role=\"fieldcontain\"]").remove(); return false;'>Delete</a>
-                  </td>
-                </tr>
-              </table>
-            </fieldset>
-          </div>
-
           <div data-role="fieldcontain">
             <a href="" data-role="button" data-icon="plus" class="ui-btn-right" onclick="addPhoneNum(); return false;">New Phone Number</a>
           </div>
-
           <div data-role="fieldcontain">
             <label for="newemail">Emails</label>
           </div>
-
-          <div data-role="fieldcontain" class="ui-hide-label" id="emailTemplate">
-            <fieldset data-role="controlgroup" data-type="horizontal">
-              <table width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td>
-                    <input type="radio" name="default-email" id="default-email" value="" />
-                    <label for="default-email">Default Email</label>
-                  </td>
-                  <td width="100%">
-                    <input type="text" name="email-1" id="email-1" value="" placeholder="Email" data-inline="true" />
-                    <label for="email-1">Email</label>
-                  </td>
-                  <td>
-                    <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick='$(event.target).parentsUntil("div[data-role=\"fieldcontain\"]").remove(); return false;'>Delete</a>
-                  </td>
-                </tr>
-              </table>
-            </fieldset>
-          </div>
-
           <div id="emails">
           </div>
-
           <div data-role="fieldcontain">
             <a href="" data-role="button" data-icon="plus" class="ui-btn-right" onclick="addEmail(); return false;">New Email</a>
           </div>
-
         </form>
       </div>
     </div>
