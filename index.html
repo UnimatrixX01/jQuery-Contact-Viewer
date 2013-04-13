@@ -11,6 +11,7 @@
       var _contactID = null;
       var _baseurl = 'http://contacts.tinyapollo.com/contacts/';
       var _appendurl = '?key='+_apikey;
+      var _nextID = 1;
 
       function getContacts(cb) {
         $.getJSON(
@@ -30,6 +31,24 @@
         );
       }
 
+      function ensureIsArray(obj) {
+        if (obj === undefined) {
+          return Array();
+        } else if (!$.isArray(obj)) {
+          return Array(obj);
+        } else {
+          return obj;
+        }
+      }
+
+      function idToValue(prefix, id) {
+        if (id !== undefined) {
+          return $("#"+prefix+"_"+id).val();
+        } else {
+          return "";
+        }
+      }
+
       $(document).on("click", "#contact_delete_btn", function() {
         $.ajax({
           url: _baseurl + _contactID + _appendurl,
@@ -41,9 +60,51 @@
         });
       });
 
+      $.fn.serializeObject = function()
+      {
+        var jsonObject = {};
+        var elements = this.serializeArray();
+        $.each(elements, function() {
+          if (jsonObject[this.name] !== undefined) {
+            if (!jsonObject[this.name].push) {
+              jsonObject[this.name] = [jsonObject[this.name]];
+            }
+            jsonObject[this.name].push(this.value || '');
+          } else {
+            jsonObject[this.name] = this.value || '';
+          }
+        });
+        return jsonObject;
+      };
+
       $(document).on("click", "#contact-list a", function() {
         _contactID = $(this).data('contact-id');
         console.log("_contactID : " + _contactID);
+      });
+
+      $(document).on("click", "#save", function() {
+        var frmDetails = $('form').serializeObject();
+
+        frmDetails.emails = ensureIsArray(frmDetails.emails);
+        frmDetails.phones = ensureIsArray(frmDetails.phones);
+
+        frmDetails.default_txt_phone = idToValue("phone", frmDetails.default_txt_phone);
+        frmDetails.default_call_phone = idToValue("phone", frmDetails.default_call_phone);
+        frmDetails.default_email = idToValue("email", frmDetails.default_email);
+
+        $.ajax({
+          type: 'POST',
+          url: _baseurl + _appendurl,
+          dataType: "json",
+          data: JSON.stringify(frmDetails),
+          contentType: "application/json",
+          success: function(result) {
+            console.log("contact added..");
+            goHome();
+          }
+        });
+
+        return false;
       });
 
       $(document).on("pagebeforeshow", "#home-page", function() {
@@ -54,6 +115,9 @@
           for (var i in _contacts ) { 
             var contact = _contacts[i];
             //console.log("contact : " + contact.name);
+            if (contact.email === undefined) {
+              contact.email = "";
+            }
             contactList.append(
             '<li>'+
             '<a href="#contact-details-page" data-contact-id="'+contact._id+'">'+
@@ -88,6 +152,9 @@
         contactContent.html('');
         getContact(_contactID, function(contact) {
           var detailsPage = $("#contact-details-page");
+          if (contact.email === undefined) {
+            contact.email = "";
+          }
           detailsPage.find("#detail_name").text(contact.name);
           detailsPage.find("#detail_title").text(contact.title);
           detailsPage.find("#detail_emails").text(contact.email);
@@ -109,24 +176,44 @@
       $(document).on("pagebeforeshow", "#contact-new-page", function() {
       });
 
+      /* Ensures at least one radiobox is selected, if there are any on the   */
+      /* page.                                                                */
+      function ensureDefaultSelected(name) {
+        var currSelected = $("input[name=" + name + "]:checked");
+        if (currSelected.size() == 0) {
+          currSelected = $("input[name=" + name + "]:first");
+          if (currSelected.size() != 0) {
+            currSelected.attr("checked", true).checkboxradio("refresh");
+          }
+        }
+      }
+
+      /* Called when a user tries to delete an e-mail / phone number from the */
+      /* list.                                                                */
+
       function onDeleteList(event) {
         $(event.target).parentsUntil("div[data-role='fieldcontain']").remove();
+        ensureDefaultSelected("default_email");
+        ensureDefaultSelected("default_call_phone");
+        ensureDefaultSelected("default_txt_phone");
         return false;
       }
 
+      /* Add a new e-mail address to the form.                                */
+
       function addEmail() {
         var newElement = $(
-          '<div data-role="fieldcontain" class="ui-hide-label" id="emailTemplate">' +
+          '<div data-role="fieldcontain" class="ui-hide-label">' +
           '  <fieldset data-role="controlgroup" data-type="horizontal">' +
           '    <table width="100%" cellspacing="0" cellpadding="0">' +
           '      <tr>' +
           '        <td>' +
-          '          <input type="radio" name="default-email" id="default-email" value="" />' +
-          '          <label for="default-email">Default Email</label>' +
+          '          <input type="radio" name="default_email" id="default_email_' + _nextID + '" value="' + _nextID + '" />' +
+          '          <label for="default_email_' + _nextID + '">Default Email</label>' +
           '        </td>' +
           '        <td width="100%">' +
-          '          <input type="text" name="email-1" id="email-1" value="" placeholder="Email" data-inline="true" />' +
-          '          <label for="email-1">Email</label>' +
+          '          <input type="text" name="emails" id="email_' + _nextID + '" value="" placeholder="Email" data-inline="true" />' +
+          '          <label for="email_' + _nextID + '">Email</label>' +
           '        </td>' +
           '        <td>' +
           '          <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick="return onDeleteList(event);">Delete</a>' +
@@ -139,26 +226,30 @@
         $('#emails').append(newElement);
         newElement.trigger('create');
 
-        $('div[data-role="fieldcontain"] fieldset  div div label[for="default-email"] span span').html('<img src="img/email.png" width="32px" height="32px"></img>');
+        $('div[data-role="fieldcontain"] fieldset  div div label[for^="default_email"] span span').html('<img src="img/email.png" width="32px" height="32px"></img>');
+        ensureDefaultSelected("default_email");
+        _nextID++;
       }
 
+      /* Add a new phone number to the form.                                  */
+
       function addPhoneNum() {
-        $('#phones').append(
-          '<div data-role="fieldcontain" class="ui-hide-label" id="phoneTemplate">' +
+        var newElement = $(
+          '<div data-role="fieldcontain" class="ui-hide-label">' +
           '  <fieldset data-role="controlgroup" data-type="horizontal">' +
           '    <table width="100%" cellspacing="0" cellpadding="0">' +
           '      <tr>' +
           '        <td>' +
-          '          <input type="radio" name="default-txt" id="default-txt" value="1" />' +
-          '          <label for="default-txt">Default Text Number</label>' +
+          '          <input type="radio" name="default_txt_phone" id="default_txt_phone_' + _nextID + '" value="' + _nextID + '" />' +
+          '          <label for="default_txt_phone_' + _nextID + '">Default Text Number</label>' +
           '        </td>' +
           '        <td>' +
-          '          <input type="radio" name="default-call" id="default-call" value="1" />' +
-          '          <label for="default-call">Default Call Number</label>' +
+          '          <input type="radio" name="default_call_phone" id="default_call_phone_' + _nextID + '" value="' + _nextID + '" />' +
+          '          <label for="default_call_phone_' + _nextID + '">Default Call Number</label>' +
           '        </td>' +
           '        <td width="100%">' +
-          '          <input type="text" name="phone-1" id="phone-1" value="" placeholder="Phone Number" data-inline="true" />' +
-          '          <label for="phone-1">Phone Number</label>' +
+          '          <input type="text" name="phones" id="phone_' + _nextID + '" value="" placeholder="Phone Number" data-inline="true" />' +
+          '          <label for="phone_' + _nextID + '">Phone Number</label>' +
           '        </td>' +
           '        <td>' +
           '          <a href="" data-role="button" data-icon="delete" class="ui-btn-right" data-inline="true" onclick="return onDeleteList(event);">Delete</a>' +
@@ -168,9 +259,21 @@
           '  </fieldset>' +
           '</div>'
         );
-        $('#phones').trigger('create');
-        $('div[data-role="fieldcontain"] fieldset  div div label[for="default-txt"] span span').html('<img src="img/texting.png" width="32px" height="32px"></img>');
-        $('div[data-role="fieldcontain"] fieldset  div div label[for="default-call"] span span').html('<img src="img/phone.png" width="32px" height="32px"></img>');
+
+        // Let jQuery re-style the elements appropriately.
+        $('#phones').append(newElement);
+        newElement.trigger('create');
+
+        // Restyle the default text/phone to more descriptive images
+        $('div[data-role="fieldcontain"] fieldset  div div label[for^="default_txt_phone"] span span').html('<img src="img/texting.png" width="32px" height="32px"></img>');
+        $('div[data-role="fieldcontain"] fieldset  div div label[for^="default_call_phone"] span span').html('<img src="img/phone.png" width="32px" height="32px"></img>');
+
+        // Ensure a default is selected for both phone and text
+        ensureDefaultSelected("default_call_phone");
+        ensureDefaultSelected("default_txt_phone");
+
+        // Increment the ID
+        _nextID++;
       }
     </script>
   </head>
@@ -231,10 +334,11 @@
       <div data-role="header">
         <a href="index.html" data-icon="delete">Cancel</a>
         <h1>New Contact</h1>
-        <a href="index.html" data-icon="check" data-theme="b">Save</a>
+        <a href="index.html" data-icon="check" data-theme="b" id="save" onclick="return false;">Save</a>
       </div>
       <div data-role="content">
-        <form action="#" method="post">
+        <form id="saveContact" action="#" method="post">
+          <input type="hidden" id="id" name="id" value="" />
           <div data-role="fieldcontain">
             <label for="name">Name:</label>
             <input type="text" name="name" id="name" value="" placeholder="Name"/>
@@ -252,7 +356,7 @@
             <a href="" data-role="button" data-icon="plus" class="ui-btn-right" onclick="addPhoneNum(); return false;">New Phone Number</a>
           </div>
           <div data-role="fieldcontain">
-            <label for="newemail">Emails</label>
+            <label for="newemail">Emails:</label>
           </div>
           <div id="emails">
           </div>
